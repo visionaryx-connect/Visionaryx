@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+:root {
+  --carbon: #0c0c0c;
+  --ivory: #fbfaf7;
+  --grey: #cccaca;
+}
+
+@theme inline {
+  --color-carbon: var(--carbon);
+  --color-ivory: var(--ivory);
+  --color-grey: var(--grey);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-inter-tight);
+}
+
+html {
+  scroll-behavior: initial;
+}
+
+body {
+  background: var(--carbon);
+  color: var(--ivory);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--ivory);
+  color: var(--carbon);
+}
+
+/* Hide native cursor when the custom space cursor is active (fine pointers only) */
+@media (pointer: fine) {
+  html.vx-cursor,
+  html.vx-cursor * {
+    cursor: none !important;
+  }
+}
+
+/* Thin monochrome scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--carbon);
+}
+::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: 3px;
+}
+
+/* Outlined display text */
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(251, 250, 247, 0.35);
+}
+
+/* Star twinkle used by the CSS starfield sprinkles */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.9; }
+}
+
+/* Cursor trail star */
+@keyframes star-pop {
+  0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.9; }
+  100% { transform: translate(-50%, -50%) scale(0) rotate(90deg); opacity: 0; }
+}
+
+.vx-trail-star {
+  position: fixed;
+  z-index: 200;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+  animation: star-pop 0.7s ease-out forwards;
+  mix-blend-mode: difference;
+}
