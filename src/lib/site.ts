@@ -9,5 +9,12 @@ export const NAV_LINKS = [
   { label: "Services", href: "#services" },
   { label: "Gen-AI Studio", href: "#genai" },
   { label: "Work", href: "#work" },
+
+  {
+    label: "Projects",
+    href: "https://visionaryx-project.mohammedriyazs0506.workers.dev/",
+    external: true,
+  },
+
   { label: "Process", href: "#process" },
 ];
