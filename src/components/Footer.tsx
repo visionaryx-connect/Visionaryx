@@ -86,8 +86,8 @@ export default function Footer() {
 
       {/* Giant horizon wordmark */}
       <div className="pointer-events-none select-none overflow-hidden" aria-hidden>
-        <div className="vx-footer-mark whitespace-nowrap text-center font-display text-[18vw] font-black uppercase leading-[0.8] tracking-tight text-ivory/[0.06]">
-          Visionary&nbsp;X
+        <div className="vx-footer-mark whitespace-nowrap text-center font-display text-[16vw] font-black uppercase leading-[0.8] tracking-tight text-ivory/[0.06]">
+          Visionary  X&nbsp;
         </div>
       </div>
     </footer>
