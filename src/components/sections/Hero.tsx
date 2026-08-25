@@ -123,7 +123,7 @@ export default function Hero() {
           </p>
         </div>
 
-        <h1 className="font-display text-[13.5vw] font-black uppercase leading-[0.92] tracking-tight sm:text-[11vw] lg:text-[8.2rem]">
+        <h1 className="font-display text-[13.5vw] font-bold uppercase leading-[0.92] tracking-tight sm:text-[11vw] lg:text-[8.2rem]">
           <span className="block overflow-hidden">
             <span className="vx-hero-line block">Make the</span>
           </span>
@@ -163,7 +163,7 @@ export default function Hero() {
         <div className="vx-hero-fade mt-12 flex flex-wrap gap-x-10 gap-y-4 border-t border-ivory/10 pt-6 md:mt-16">
           {HERO_STATS.map((s) => (
             <div key={s.label}>
-              <div className="font-display text-2xl font-extrabold text-ivory md:text-3xl">
+              <div className="font-display text-2xl font-bold text-ivory md:text-3xl">
                 {s.value}
               </div>
               <div className="mt-1 text-[10px] uppercase tracking-[0.2em] text-grey md:text-[11px]">

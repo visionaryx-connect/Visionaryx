@@ -65,7 +65,7 @@ export default function Process() {
           <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.4em] text-grey">
             Mission control — the operating system
           </p>
-          <h2 className="font-display text-4xl font-extrabold uppercase leading-[1.05] md:text-6xl">
+          <h2 className="font-display text-4xl font-bold uppercase leading-[1.05] md:text-6xl">
             Same rig.
             <br />
             Every brand.
@@ -88,8 +88,8 @@ export default function Process() {
               <div key={s.num} className="vx-step relative">
                 <span className="absolute -left-10 top-1.5 h-2.5 w-2.5 rounded-full border border-ivory bg-carbon md:-left-[46px]" />
                 <div className="flex items-baseline gap-4">
-                  <span className="font-display text-sm font-black text-grey">{s.num}</span>
-                  <h3 className="font-display text-2xl font-extrabold uppercase text-ivory md:text-3xl">
+                  <span className="font-display text-sm font-bold text-grey">{s.num}</span>
+                  <h3 className="font-display text-2xl font-bold uppercase text-ivory md:text-3xl">
                     {s.title}
                   </h3>
                 </div>

@@ -11,10 +11,11 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+// Fallback for the display face until the licensed Neue Montreal files are
+// dropped into /public/fonts. Variable axis — no static weight list needed.
 const interTight = Inter_Tight({
   variable: "--font-inter-tight",
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {

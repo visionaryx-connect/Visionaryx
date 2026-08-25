@@ -83,7 +83,7 @@ export default function Work() {
       <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.4em] text-grey">
         Flight log — missions that landed
       </p>
-      <h2 className="font-display text-4xl font-extrabold uppercase leading-tight md:text-6xl">
+      <h2 className="font-display text-4xl font-bold uppercase leading-tight md:text-6xl">
         Proof, not
         <br />
         <span className="text-outline">promises.</span>
@@ -94,7 +94,7 @@ export default function Work() {
           <div key={c.client} className="vx-case relative">
             <span
               aria-hidden
-              className="vx-case-num pointer-events-none absolute -top-14 right-0 select-none font-display text-[9rem] font-black leading-none text-ivory/[0.05] md:text-[15rem]"
+              className="vx-case-num pointer-events-none absolute -top-14 right-0 select-none font-display text-[9rem] font-bold leading-none text-ivory/[0.05] md:text-[15rem]"
             >
               {String(i + 1).padStart(2, "0")}
             </span>
@@ -102,7 +102,7 @@ export default function Work() {
               <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-grey">
                 {c.client}
               </p>
-              <h3 className="font-display mt-3 max-w-3xl text-3xl font-extrabold uppercase leading-[1.05] text-ivory md:text-5xl">
+              <h3 className="font-display mt-3 max-w-3xl text-3xl font-bold uppercase leading-[1.05] text-ivory md:text-5xl">
                 {c.title}
               </h3>
               <p className="mt-4 max-w-xl text-sm leading-relaxed text-grey md:text-base">
@@ -111,7 +111,7 @@ export default function Work() {
               <div className="mt-8 flex flex-wrap gap-x-12 gap-y-5">
                 {c.stats.map((s) => (
                   <div key={s.l}>
-                    <div className="font-display text-3xl font-black text-ivory md:text-4xl">
+                    <div className="font-display text-3xl font-bold text-ivory md:text-4xl">
                       {s.v}
                     </div>
                     <div className="mt-1 text-[10px] uppercase tracking-[0.2em] text-grey">

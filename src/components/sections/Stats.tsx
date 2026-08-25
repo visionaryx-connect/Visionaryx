@@ -66,7 +66,7 @@ export default function Stats() {
       <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.4em] text-grey">
         Mission telemetry
       </p>
-      <h2 className="font-display text-3xl font-extrabold uppercase leading-tight md:text-5xl">
+      <h2 className="font-display text-3xl font-bold uppercase leading-tight md:text-5xl">
         Numbers that don&rsquo;t need <br className="hidden md:block" />
         a pitch deck.
       </h2>
@@ -75,7 +75,7 @@ export default function Stats() {
         {STATS.map((s) => (
           <div key={s.label} className="vx-stat-item">
             <div className="vx-stat-line mb-5 h-px w-full bg-ivory/20" />
-            <div className="font-display text-5xl font-black text-ivory md:text-6xl">
+            <div className="font-display text-5xl font-bold text-ivory md:text-6xl">
               {s.prefix}
               <span
                 className="vx-stat-num"

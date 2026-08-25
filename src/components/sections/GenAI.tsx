@@ -54,7 +54,7 @@ function ChapterVisual({ type }: { type: string }) {
           <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-grey">
             Case file · EP.04
           </div>
-          <div className="font-display mt-2 text-3xl font-black uppercase text-ivory">
+          <div className="font-display mt-2 text-3xl font-bold uppercase text-ivory">
             Cold Static
           </div>
           <div className="mt-3 h-px w-full bg-ivory/20" />
@@ -173,7 +173,7 @@ export default function GenAI() {
           <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.4em] text-grey">
             Gen-AI videos &amp; shows
           </p>
-          <h2 className="font-display text-4xl font-extrabold uppercase leading-[1.02] md:text-6xl">
+          <h2 className="font-display text-4xl font-bold uppercase leading-[1.02] md:text-6xl">
             The render farm
             <br />
             <span className="text-outline">never sleeps.</span>
@@ -190,10 +190,10 @@ export default function GenAI() {
               }`}
             >
               <div>
-                <span className="font-display text-6xl font-black text-ivory/10 md:text-8xl">
+                <span className="font-display text-6xl font-bold text-ivory/10 md:text-8xl">
                   {c.num}
                 </span>
-                <h3 className="font-display mt-2 text-3xl font-extrabold uppercase text-ivory md:text-5xl">
+                <h3 className="font-display mt-2 text-3xl font-bold uppercase text-ivory md:text-5xl">
                   {c.title}
                 </h3>
                 <p className="mt-2 text-sm font-bold uppercase tracking-[0.18em] text-grey">

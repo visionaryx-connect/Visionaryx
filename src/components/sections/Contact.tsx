@@ -4,20 +4,61 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { gsap } from "@/lib/gsap";
 import MagneticButton from "@/components/MagneticButton";
-import { SITE } from "@/lib/site";
+import { SITE, mailtoLink, whatsappLink } from "@/lib/site";
 
 const inputCls =
   "w-full rounded-lg border border-ivory/15 bg-ivory/[0.04] px-4 py-3.5 text-sm text-ivory placeholder:text-ivory/30 outline-none transition-colors focus:border-ivory/60";
 
+type Channel = "whatsapp" | "email";
+type Draft = { subject: string; body: string };
+
+const CHANNEL_LABEL: Record<Channel, string> = {
+  whatsapp: "WhatsApp",
+  email: "your mail app",
+};
+
+/** Flattens the form into one plain-text block both channels can carry. */
+const buildDraft = (data: FormData): Draft => {
+  const field = (key: string) => String(data.get(key) ?? "").trim();
+  const name = field("name");
+
+  return {
+    subject: `Growth call request — ${name}`,
+    body: [
+      `Name: ${name}`,
+      `Email: ${field("email")}`,
+      `Phone: ${field("phone") || "not provided"}`,
+      `Company: ${field("company")}`,
+      "",
+      "Project / goal:",
+      field("message"),
+    ].join("\n"),
+  };
+};
+
+/** Hands the draft off to WhatsApp or the default mail client. */
+const handOff = (channel: Channel, { subject, body }: Draft) => {
+  if (channel === "whatsapp") {
+    window.open(
+      whatsappLink(`${subject}\n\n${body}`),
+      "_blank",
+      "noopener,noreferrer"
+    );
+  } else {
+    window.location.href = mailtoLink(subject, body);
+  }
+};
+
 /**
  * The landing pad: giant headline chars rise letter by letter on scroll,
- * then the lead-capture form docks in from the right.
+ * then the lead-capture form docks in from the right. Submitting opens a
+ * prefilled WhatsApp chat or mail draft — no backend in the loop.
  */
 export default function Contact() {
   const root = useRef<HTMLElement>(null);
-  const [sent, setSent] = useState(false);
-  const [sending, setSending] = useState(false);
-  const [error, setError] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const [sentVia, setSentVia] = useState<Channel | null>(null);
+  const [draft, setDraft] = useState<Draft | null>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -49,37 +90,15 @@ export default function Contact() {
     return () => ctx.revert();
   }, []);
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const name = data.get("name");
+  /** Runs native HTML5 validation, then routes the draft to the channel. */
+  const send = (channel: Channel) => {
+    const form = formRef.current;
+    if (!form || !form.reportValidity()) return;
 
-    setSending(true);
-    setError(false);
-    try {
-      // Real-time delivery straight to the inbox via FormSubmit (no mail app).
-      // First-ever submission sends a one-time activation email to SITE.email.
-      const res = await fetch(`https://formsubmit.co/ajax/${SITE.email}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          name,
-          email: data.get("email"),
-          phone: data.get("phone") || "not provided",
-          company: data.get("company"),
-          message: data.get("message"),
-          _subject: `Growth call request — ${name}`,
-          _template: "table",
-          _captcha: "false",
-        }),
-      });
-      if (!res.ok) throw new Error(`FormSubmit responded ${res.status}`);
-      setSent(true);
-    } catch {
-      setError(true);
-    } finally {
-      setSending(false);
-    }
+    const next = buildDraft(new FormData(form));
+    handOff(channel, next);
+    setDraft(next);
+    setSentVia(channel);
   };
 
   const headline = "LET'S MAKE YOUR COMPETITORS NERVOUS.";
@@ -101,7 +120,7 @@ export default function Contact() {
             Now we begin properly
           </p>
           <h2
-            className="font-display max-w-2xl text-4xl font-black uppercase leading-[1.02] md:text-7xl"
+            className="font-display max-w-2xl text-4xl font-bold uppercase leading-[1.02] md:text-7xl"
             aria-label={headline}
           >
             {headline.split(" ").map((word, wi) => (
@@ -128,20 +147,33 @@ export default function Contact() {
               <span className="mr-3 inline-block h-1.5 w-1.5 rounded-full bg-ivory align-middle" />
               India + GCC · outcome-based engagements
             </p>
-            <a
-              href={`mailto:${SITE.email}`}
-              data-cursor="Email"
-              className="inline-block border-b border-ivory/30 pb-0.5 text-ivory transition-colors hover:border-ivory"
-            >
-              {SITE.email}
-            </a>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-1">
+              <a
+                href={`mailto:${SITE.email}`}
+                data-cursor="Email"
+                className="inline-block border-b border-ivory/30 pb-0.5 text-ivory transition-colors hover:border-ivory"
+              >
+                {SITE.email}
+              </a>
+              <a
+                href={whatsappLink(
+                  `Hi ${SITE.name} — I'd like to book a growth call.`
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-cursor="Chat"
+                className="inline-block border-b border-ivory/30 pb-0.5 text-ivory transition-colors hover:border-ivory"
+              >
+                Chat on WhatsApp
+              </a>
+            </div>
           </div>
         </div>
 
         {/* Lead form */}
         <div className="vx-cta-form rounded-2xl border border-ivory/12 bg-[#111111] p-7 md:p-9">
           <AnimatePresence mode="wait">
-            {sent ? (
+            {sentVia ? (
               <motion.div
                 key="done"
                 initial={{ opacity: 0, scale: 0.92 }}
@@ -156,27 +188,45 @@ export default function Contact() {
                 >
                   🚀
                 </motion.div>
-                <h3 className="font-display mt-6 text-2xl font-extrabold uppercase text-ivory">
-                  Request sent!
+                <h3 className="font-display mt-6 text-2xl font-bold uppercase text-ivory">
+                  Almost there
                 </h3>
                 <p className="mt-3 max-w-xs text-sm text-grey">
-                  Thanks — your details are with our team. We&rsquo;ll get back
-                  to you within 24 hours to set up your growth call.
+                  We opened {CHANNEL_LABEL[sentVia]} with your request already
+                  written out — hit send there and it&rsquo;s with our team.
+                  We&rsquo;ll reply within 24 hours.
                 </p>
+                {draft && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handOff(sentVia === "whatsapp" ? "email" : "whatsapp", draft)
+                    }
+                    data-cursor="Send"
+                    className="mt-6 text-xs uppercase tracking-[0.18em] text-ivory/50 underline underline-offset-4 transition-colors hover:text-ivory"
+                  >
+                    Nothing opened? Send via{" "}
+                    {sentVia === "whatsapp" ? "email" : "WhatsApp"} instead
+                  </button>
+                )}
               </motion.div>
             ) : (
               <motion.form
                 key="form"
+                ref={formRef}
                 exit={{ opacity: 0, y: -10 }}
-                onSubmit={onSubmit}
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  send("whatsapp");
+                }}
                 className="flex flex-col gap-4"
               >
-                <h3 className="font-display text-xl font-extrabold uppercase text-ivory">
+                <h3 className="font-display text-xl font-bold uppercase text-ivory">
                   Book your free growth call
                 </h3>
                 <p className="-mt-2 text-xs leading-relaxed text-grey">
-                  Fill this in — takes under a minute. We&rsquo;ll get back to
-                  you within 24 hours.
+                  Fill this in — takes under a minute. Send it however you
+                  prefer; we reply within 24 hours.
                 </p>
                 <input name="name" required placeholder="Your name" className={inputCls} />
                 <input
@@ -201,21 +251,21 @@ export default function Contact() {
                   className={`${inputCls} resize-none`}
                 />
                 <MagneticButton
-                  type="submit"
-                  disabled={sending}
-                  data-cursor="Send"
-                  className="mt-2 rounded-full bg-ivory py-4 text-sm font-bold uppercase tracking-[0.16em] text-carbon disabled:opacity-60"
+                  type="button"
+                  onClick={() => send("whatsapp")}
+                  data-cursor="Chat"
+                  className="mt-2 rounded-full bg-ivory py-4 text-sm font-bold uppercase tracking-[0.16em] text-carbon"
                 >
-                  {sending ? "Sending…" : "Send request →"}
+                  Send on WhatsApp →
                 </MagneticButton>
-                {error && (
-                  <p className="text-center text-xs text-ivory/70">
-                    Something went wrong — please try again, or email us at{" "}
-                    <a href={`mailto:${SITE.email}`} className="underline">
-                      {SITE.email}
-                    </a>
-                  </p>
-                )}
+                <MagneticButton
+                  type="button"
+                  onClick={() => send("email")}
+                  data-cursor="Email"
+                  className="rounded-full border border-ivory/25 py-4 text-sm font-bold uppercase tracking-[0.16em] text-ivory transition-colors hover:border-ivory/70"
+                >
+                  Send by email →
+                </MagneticButton>
                 <p className="text-center text-[10px] uppercase tracking-[0.2em] text-ivory/30">
                   No spam — we reply within 24 hours.
                 </p>

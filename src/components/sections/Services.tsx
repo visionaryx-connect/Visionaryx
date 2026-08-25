@@ -108,7 +108,7 @@ export default function Services() {
         <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.4em] text-grey">
           The payload — eight services, one accountable team
         </p>
-        <h2 className="font-display text-4xl font-extrabold uppercase leading-[1.05] md:text-6xl">
+        <h2 className="font-display text-4xl font-bold uppercase leading-[1.05] md:text-6xl">
           <span className="inline-block overflow-hidden pb-1"><span className="vx-word inline-block">Everything</span></span>{" "}
           <span className="inline-block overflow-hidden pb-1"><span className="vx-word inline-block">growth</span></span>{" "}
           <span className="inline-block overflow-hidden pb-1"><span className="vx-word inline-block">needs.</span></span>
@@ -133,11 +133,11 @@ export default function Services() {
             data-cursor="VX"
           >
             <div className="flex flex-col gap-5 md:flex-row md:items-start md:gap-10">
-              <span className="font-display text-5xl font-black text-ivory/15 md:text-7xl">
+              <span className="font-display text-5xl font-bold text-ivory/15 md:text-7xl">
                 {s.num}
               </span>
               <div className="flex-1">
-                <h3 className="font-display text-2xl font-extrabold uppercase tracking-tight text-ivory md:text-4xl">
+                <h3 className="font-display text-2xl font-bold uppercase tracking-tight text-ivory md:text-4xl">
                   {s.title}
                 </h3>
                 <p className="mt-3 max-w-2xl text-sm leading-relaxed text-grey md:text-base">
