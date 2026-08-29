@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
-  "name": "vxwebiste",
+  "name": "vx",
   "compatibility_date": "2026-08-29",
   "compatibility_flags": [
     "nodejs_compat",
@@ -14,10 +14,12 @@
   "services": [
     {
       "binding": "WORKER_SELF_REFERENCE",
-      "service": "vxwebiste"
+      "service": "vx"
     }
   ],
   "images": {
     "binding": "IMAGES"
-  }
+  },
+  "workers_dev": true,
+  "preview_urls": false
 }
