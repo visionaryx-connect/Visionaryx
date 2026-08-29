@@ -6,7 +6,7 @@ export const SITE = {
   // !! PLACEHOLDER !! Swap in the real WhatsApp business number before launch.
   // Full international format: country code first, digits only — no "+",
   // spaces or dashes. India example: "919876543210".
-  whatsapp: "9994140525",
+  whatsapp: "7305603537",
 
   tagline: "Make the world stop scrolling.",
 };
@@ -28,7 +28,7 @@ export const NAV_LINKS = [
 
   {
     label: "Projects",
-    href: "https://visionaryx-project.mohammedriyazs0506.workers.dev/",
+    href: "https://project.visionary-x.in/",
     external: true,
   },
 
