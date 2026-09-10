@@ -28,7 +28,7 @@ export const NAV_LINKS = [
 
   {
     label: "Projects",
-    href: "https://project.visionary-x.in/",
+    href: "https://proj.visionary-x.in/",
     external: true,
   },
 
