@@ -1,8 +1,8 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "visionaryx",
   "main": ".open-next/worker.js",
-  "name": "visionaryx-project",
-  "compatibility_date": "2026-08-29",
+  "compatibility_date": "2026-09-10",
   "compatibility_flags": [
     "nodejs_compat",
     "global_fetch_strictly_public"
@@ -11,12 +11,6 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
-  "services": [
-    {
-      "binding": "WORKER_SELF_REFERENCE",
-      "service": "visionaryx-project"
-    }
-  ],
   "images": {
     "binding": "IMAGES"
   },
