@@ -62,9 +62,21 @@ const SERVICES = [
   },
 ];
 
+/** Where the first card locks under the navbar, and how far below it each
+ *  next card locks. The step is what you actually see as the deck's stacked
+ *  edges, so it has to be wide enough to read as separate cards. */
+const STACK_TOP = 96;
+const STACK_STEP = 12;
+
 /**
- * Deck-of-cards scroll effect: each card is sticky and scales/dims
- * as the next one slides over it.
+ * Deck-of-cards scroll effect: each card is sticky and recedes as the next
+ * one slides over it.
+ *
+ * The dim is painted by an opaque veil *inside* the card rather than by
+ * fading the card's own opacity — a translucent card lets every card already
+ * parked underneath show through it, which turned the top of the stack into
+ * unreadable overlapping text. Everything is scrubbed, so scrolling back up
+ * walks the cards straight back to full brightness.
  */
 export default function Services() {
   const root = useRef<HTMLElement>(null);
@@ -72,19 +84,34 @@ export default function Services() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       const cards = gsap.utils.toArray<HTMLElement>(".vx-service-card");
+
+      // Shrink towards the locked top edge so the stacked edges stay exactly
+      // STACK_STEP apart instead of drifting as the card scales.
+      gsap.set(cards, { transformOrigin: "center top" });
+
       cards.forEach((card, i) => {
         if (i === cards.length - 1) return;
-        gsap.to(card, {
-          scale: 0.92,
-          opacity: 0.45,
-          ease: "none",
-          scrollTrigger: {
-            trigger: cards[i + 1],
-            start: "top bottom",
-            end: "top top+=120",
-            scrub: true,
-          },
-        });
+
+        const lockedTop = STACK_TOP + (i + 1) * STACK_STEP;
+
+        gsap
+          .timeline({
+            scrollTrigger: {
+              trigger: cards[i + 1],
+              start: "top 72%",
+              // Fully receded exactly as the next card reaches its own
+              // sticky resting position.
+              end: () => `top top+=${lockedTop}`,
+              scrub: true,
+              invalidateOnRefresh: true,
+            },
+          })
+          .to(card, { scale: 0.95, ease: "none" }, 0)
+          .to(
+            card.querySelector(".vx-card-veil"),
+            { opacity: 0.58, ease: "none" },
+            0
+          );
       });
 
       gsap.fromTo(
@@ -128,8 +155,8 @@ export default function Services() {
         {SERVICES.map((s, i) => (
           <article
             key={s.num}
-            className="vx-service-card sticky rounded-2xl border border-ivory/12 bg-[#111111] p-7 shadow-[0_-20px_60px_rgba(0,0,0,0.6)] md:p-10"
-            style={{ top: `${96 + i * 8}px` }}
+            className="vx-service-card sticky isolate overflow-hidden rounded-2xl border border-ivory/12 bg-[#111111] p-7 shadow-[0_-20px_60px_rgba(0,0,0,0.6)] md:p-10"
+            style={{ top: `${STACK_TOP + i * STACK_STEP}px` }}
             data-cursor="VX"
           >
             <div className="flex flex-col gap-5 md:flex-row md:items-start md:gap-10">
@@ -155,6 +182,13 @@ export default function Services() {
                 </div>
               </div>
             </div>
+
+            {/* Dims the card as the next one lands on it. Opaque, so nothing
+                parked below ever shows through. */}
+            <div
+              aria-hidden
+              className="vx-card-veil pointer-events-none absolute inset-0 rounded-2xl bg-carbon opacity-0"
+            />
           </article>
         ))}
       </div>
