@@ -5,12 +5,9 @@ import Logo from "@/components/Logo";
 import ProjectGrid from "@/components/ProjectGrid";
 import { PROJECTS, getProject } from "@/lib/projects";
 
-export const dynamicParams = false;
-
-export function generateStaticParams() {
-  return PROJECTS.map((p) => ({ slug: p.slug }));
-}
-
+// Rendered per request, not prebuilt: OpenNext on Cloudflare keeps prebuilt
+// pages in an incremental cache this project doesn't configure, so
+// generateStaticParams pages 404'd in production. Unknown slugs → notFound().
 export async function generateMetadata(
   props: PageProps<"/projects/[slug]">
 ): Promise<Metadata> {
