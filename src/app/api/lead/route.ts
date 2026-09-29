@@ -37,30 +37,44 @@ export async function POST(request: Request) {
     return Response.json({ ok: false }, { status: 400 });
   }
 
-  // Apps Script runs doPost, then 302-redirects to the URL holding its
-  // reply. Follow that redirect by hand with a GET: Cloudflare's fetch
-  // doesn't reliably do it for a POST, so the lead saved but the reply failed.
-  let res = await fetch(url, {
+  // Apps Script runs doPost to completion, *then* 302-redirects to a
+  // googleusercontent URL holding its reply. Google often refuses that second
+  // request from Cloudflare's datacenter IPs, so the row saves but the reply
+  // is lost. Read the reply when we can; if we can't, the 302 alone proves
+  // the script ran.
+  const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(lead),
     redirect: "manual",
   });
   const next = res.headers.get("location");
-  if (res.status >= 300 && res.status < 400 && next) {
-    res = await fetch(next);
+  const ran = res.status >= 300 && res.status < 400 && !!next;
+
+  let reply = res;
+  if (ran) {
+    try {
+      reply = await fetch(next!);
+    } catch (err) {
+      console.error("Sheets reply fetch failed (lead saved)", err);
+      return Response.json({ ok: true });
+    }
   }
-  const text = await res.text();
+  const text = await reply.text();
   let result: { ok?: boolean } | null = null;
   try {
     result = JSON.parse(text);
   } catch {
-    // Google returned an HTML error page, not JSON.
-  }
-  if (!res.ok || !result?.ok) {
-    console.error("Sheets webhook failed", res.status, text.slice(0, 300));
-    return Response.json({ ok: false }, { status: 502 });
+    // Not JSON — Google served an HTML page instead of the script's reply.
   }
 
-  return Response.json({ ok: true });
+  if (result?.ok) return Response.json({ ok: true });
+  // Script explicitly reported an error (e.g. sheet missing): a real failure.
+  if (result && !result.ok) {
+    console.error("Sheets script error", text.slice(0, 300));
+    return Response.json({ ok: false }, { status: 502 });
+  }
+  // Reply unreadable. If the script ran, the lead is saved.
+  console.error("Sheets reply unreadable", res.status, reply.status, text.slice(0, 200));
+  return Response.json({ ok: ran }, { status: ran ? 200 : 502 });
 }
