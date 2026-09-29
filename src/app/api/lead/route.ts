@@ -61,7 +61,7 @@ export async function POST(request: Request) {
     }
   }
   const text = await reply.text();
-  let result: { ok?: boolean } | null = null;
+  let result: { ok?: boolean; error?: string } | null = null;
   try {
     result = JSON.parse(text);
   } catch {
@@ -72,9 +72,16 @@ export async function POST(request: Request) {
   // Script explicitly reported an error (e.g. sheet missing): a real failure.
   if (result && !result.ok) {
     console.error("Sheets script error", text.slice(0, 300));
-    return Response.json({ ok: false }, { status: 502 });
+    // ponytail: diagnostic detail in the response; drop once leads are stable.
+    return Response.json(
+      { ok: false, why: "script", error: String(result.error ?? "").slice(0, 200) },
+      { status: 502 }
+    );
   }
   // Reply unreadable. If the script ran, the lead is saved.
   console.error("Sheets reply unreadable", res.status, reply.status, text.slice(0, 200));
-  return Response.json({ ok: ran }, { status: ran ? 200 : 502 });
+  return Response.json(
+    ran ? { ok: true } : { ok: false, why: "no-redirect", first: res.status, reply: reply.status },
+    { status: ran ? 200 : 502 }
+  );
 }
