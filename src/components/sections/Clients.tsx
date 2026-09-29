@@ -13,17 +13,17 @@ import { gsap } from "@/lib/gsap";
  * aspect ratio, and nothing is wider than the tile's 144px of usable width.
  */
 const CLIENTS = [
-  { name: "CIBI", file: "cibi.png", w: 54, h: 58 },
-  { name: "Sakthi Masala", file: "sakthi-masala.png", w: 54, h: 54 },
   { name: "IPG", file: "ipg.png", w: 73, h: 56 },
-  { name: "Poomex", file: "poomex.png", w: 134, h: 38 },
-  { name: "HD Florals", file: "hd-florals.png", w: 76, h: 54 },
+  { name: "Sakthi Masala", file: "sakthi-masala.png", w: 54, h: 54 },
   { name: "Next 24 Live", file: "next-24-live.jpeg", w: 115, h: 30 },
+  { name: "Poomex", file: "poomex.png", w: 134, h: 38 },
+  { name: "AIADMK", file: "aiadmk.png", w: 58, h: 50 },
+  { name: "HD Florals", file: "hd-florals.png", w: 76, h: 54 },
+  { name: "Farm Life", file: "farm-life.png", w: 68, h: 56 },
   { name: "Vaisnav Infrastructure", file: "vaisnav-infrastructure.jpeg", w: 53, h: 58 },
   { name: "Erode Om Mills", file: "erode-om-mills.png", w: 141, h: 28 },
-  { name: "Farm Life", file: "farm-life.png", w: 68, h: 56 },
   { name: "Coffee Daddy", file: "coffee-daddy.png", w: 133, h: 46 },
-  { name: "AIADMK", file: "aiadmk.png", w: 58, h: 50 },
+  { name: "CIBI", file: "cibi.png", w: 54, h: 58 },
 ];
 
 /**

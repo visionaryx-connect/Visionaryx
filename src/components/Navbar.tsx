@@ -16,16 +16,10 @@ export default function Navbar() {
     setSolid(latest > 40);
   });
 
-const go = (href: string, external?: boolean) => {
-  setOpen(false);
-
-  if (external) {
-    window.open(href, "_blank", "noopener,noreferrer");
-    return;
-  }
-
-  scrollToSection(href);
-};
+  const go = (href: string) => {
+    setOpen(false);
+    scrollToSection(href);
+  };
 
   return (
     <header
@@ -46,7 +40,7 @@ const go = (href: string, external?: boolean) => {
           {NAV_LINKS.map((link) => (
             <li key={link.href}>
               <button
-                onClick={() => go(link.href, link.external)}
+                onClick={() => go(link.href)}
                 data-cursor="Go"
                 className="group relative text-[13px] font-medium uppercase tracking-[0.18em] text-grey transition-colors hover:text-ivory"
               >
@@ -99,7 +93,7 @@ const go = (href: string, external?: boolean) => {
               transition={{ delay: open ? 0.06 * i : 0 }}
             >
               <button
-                onClick={() => go(link.href, link.external)}
+                onClick={() => go(link.href)}
                 className="py-2 font-display text-2xl font-bold text-ivory"
               >
                 {link.label}

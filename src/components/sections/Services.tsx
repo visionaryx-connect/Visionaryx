@@ -62,57 +62,27 @@ const SERVICES = [
   },
 ];
 
-/** Where the first card locks under the navbar, and how far below it each
- *  next card locks. The step is what you actually see as the deck's stacked
- *  edges, so it has to be wide enough to read as separate cards. */
-const STACK_TOP = 96;
-const STACK_STEP = 12;
-
 /**
- * Deck-of-cards scroll effect: each card is sticky and recedes as the next
- * one slides over it.
- *
- * The dim is painted by an opaque veil *inside* the card rather than by
- * fading the card's own opacity — a translucent card lets every card already
- * parked underneath show through it, which turned the top of the stack into
- * unreadable overlapping text. Everything is scrubbed, so scrolling back up
- * walks the cards straight back to full brightness.
+ * Compact grid: every service visible in roughly one screen instead of a
+ * long sticky deck. Cards rise in with one batched ScrollTrigger.
  */
 export default function Services() {
   const root = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const cards = gsap.utils.toArray<HTMLElement>(".vx-service-card");
-
-      // Shrink towards the locked top edge so the stacked edges stay exactly
-      // STACK_STEP apart instead of drifting as the card scales.
-      gsap.set(cards, { transformOrigin: "center top" });
-
-      cards.forEach((card, i) => {
-        if (i === cards.length - 1) return;
-
-        const lockedTop = STACK_TOP + (i + 1) * STACK_STEP;
-
-        gsap
-          .timeline({
-            scrollTrigger: {
-              trigger: cards[i + 1],
-              start: "top 72%",
-              // Fully receded exactly as the next card reaches its own
-              // sticky resting position.
-              end: () => `top top+=${lockedTop}`,
-              scrub: true,
-              invalidateOnRefresh: true,
-            },
-          })
-          .to(card, { scale: 0.95, ease: "none" }, 0)
-          .to(
-            card.querySelector(".vx-card-veil"),
-            { opacity: 0.58, ease: "none" },
-            0
-          );
-      });
+      gsap.fromTo(
+        ".vx-service-card",
+        { y: 40, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.06,
+          ease: "power3.out",
+          scrollTrigger: { trigger: ".vx-service-grid", start: "top 80%" },
+        }
+      );
 
       gsap.fromTo(
         ".vx-services-heading .vx-word",
@@ -151,44 +121,32 @@ export default function Services() {
         </p>
       </div>
 
-      <div className="flex flex-col gap-6">
-        {SERVICES.map((s, i) => (
+      <div className="vx-service-grid grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {SERVICES.map((s) => (
           <article
             key={s.num}
-            className="vx-service-card sticky isolate overflow-hidden rounded-2xl border border-ivory/12 bg-[#111111] p-7 shadow-[0_-20px_60px_rgba(0,0,0,0.6)] md:p-10"
-            style={{ top: `${STACK_TOP + i * STACK_STEP}px` }}
+            className="vx-service-card flex flex-col rounded-2xl border border-ivory/12 bg-[#111111] p-6 transition-colors hover:border-ivory/30"
             data-cursor="VX"
           >
-            <div className="flex flex-col gap-5 md:flex-row md:items-start md:gap-10">
-              <span className="font-display text-5xl font-bold text-ivory/15 md:text-7xl">
-                {s.num}
-              </span>
-              <div className="flex-1">
-                <h3 className="font-display text-2xl font-bold uppercase tracking-tight text-ivory md:text-4xl">
-                  {s.title}
-                </h3>
-                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-grey md:text-base">
-                  {s.blurb}
-                </p>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {s.tags.map((t) => (
-                    <span
-                      key={t}
-                      className="rounded-full border border-ivory/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-grey"
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
+            <span className="font-display text-3xl font-bold text-ivory/15">
+              {s.num}
+            </span>
+            <h3 className="font-display mt-4 text-xl font-bold uppercase leading-tight tracking-tight text-ivory">
+              {s.title}
+            </h3>
+            <p className="mt-3 flex-1 text-sm leading-relaxed text-grey">
+              {s.blurb}
+            </p>
+            <div className="mt-5 flex flex-wrap gap-1.5">
+              {s.tags.map((t) => (
+                <span
+                  key={t}
+                  className="rounded-full border border-ivory/15 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-grey"
+                >
+                  {t}
+                </span>
+              ))}
             </div>
-
-            {/* Dims the card as the next one lands on it. Opaque, so nothing
-                parked below ever shows through. */}
-            <div
-              aria-hidden
-              className="vx-card-veil pointer-events-none absolute inset-0 rounded-2xl bg-carbon opacity-0"
-            />
           </article>
         ))}
       </div>

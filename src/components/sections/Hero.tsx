@@ -151,7 +151,7 @@ export default function Hero() {
             Book a growth call
           </MagneticButton>
           <MagneticButton
-            onClick={() => scrollToSection("#work")}
+            onClick={() => scrollToSection("#projects")}
             data-cursor="Orbit"
             className="rounded-full border border-ivory/30 px-7 py-3.5 text-sm font-bold uppercase tracking-[0.14em] text-ivory transition-colors hover:border-ivory"
           >

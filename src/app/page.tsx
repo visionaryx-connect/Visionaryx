@@ -5,8 +5,7 @@ import Hero from "@/components/sections/Hero";
 import Stats from "@/components/sections/Stats";
 import Clients from "@/components/sections/Clients";
 import Services from "@/components/sections/Services";
-import GenAI from "@/components/sections/GenAI";
-import Work from "@/components/sections/Work";
+import Projects from "@/components/sections/Projects";
 import Process from "@/components/sections/Process";
 import Contact from "@/components/sections/Contact";
 
@@ -19,8 +18,7 @@ export default function Home() {
       <Stats />
       <Clients />
       <Services />
-      <GenAI />
-      <Work />
+      <Projects />
       <Process />
       <Contact />
       <Footer />

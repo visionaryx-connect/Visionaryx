@@ -6,7 +6,7 @@ import { gsap } from "@/lib/gsap";
 const STEPS = [
   { num: "01", title: "Discover", copy: "Pressure-test the goal, market and maths before making a thing." },
   { num: "02", title: "Strategy", copy: "One thesis: audience, offer, channels, and the KPI we own." },
-  { num: "03", title: "AI Creative", copy: "Weeks of output in days — built to be tested, not admired." },
+  { num: "03", title: "Create", copy: "Weeks of output in days — built to be tested, not admired." },
   { num: "04", title: "Launch", copy: "Live with tracking wired click-to-close." },
   { num: "05", title: "Optimise", copy: "Kill losers fast, scale winners hard, report in revenue." },
   { num: "06", title: "Repeat until rich", copy: "Then we do it again, bigger." },
