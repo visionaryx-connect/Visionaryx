@@ -38,27 +38,41 @@ function doPost(e) {
       "New",
     ]);
     // Email alert for every lead (sheet notifications skip your own edits).
-    MailApp.sendEmail({
-      to: Session.getEffectiveUser().getEmail(),
-      replyTo: d.email,
-      subject: "New website lead — " + d.name + " (" + d.company + ")",
-      body: [
-        "Name: " + d.name,
-        "Email: " + d.email,
-        "Phone: " + (d.phone || "—"),
-        "Company: " + d.company,
-        "",
-        d.message,
-        "",
-        SpreadsheetApp.getActiveSpreadsheet().getUrl(),
-      ].join("\n"),
-    });
+    // The row is already saved, so a mail failure must not fail the lead.
+    try {
+      sendAlert(d);
+    } catch (mailErr) {
+      console.error("Lead saved, email alert failed: " + mailErr);
+    }
     return json({ ok: true });
   } catch (err) {
     return json({ ok: false, error: String(err) });
   } finally {
     lock.releaseLock();
   }
+}
+
+function sendAlert(d) {
+  MailApp.sendEmail({
+    to: Session.getEffectiveUser().getEmail(),
+    replyTo: d.email,
+    subject: "New website lead — " + d.name + " (" + d.company + ")",
+    body: [
+      "Name: " + d.name,
+      "Email: " + d.email,
+      "Phone: " + (d.phone || "—"),
+      "Company: " + d.company,
+      "",
+      d.message,
+      "",
+      SpreadsheetApp.getActiveSpreadsheet().getUrl(),
+    ].join("\n"),
+  });
+}
+
+/** Run this once from the editor (select it → Run) to grant email permission. */
+function authorize() {
+  sendAlert({ name: "Test", email: Session.getEffectiveUser().getEmail(), company: "Setup", message: "Email alerts are working." });
 }
 
 function json(obj) {

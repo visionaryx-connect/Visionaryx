@@ -37,11 +37,19 @@ export async function POST(request: Request) {
     return Response.json({ ok: false }, { status: 400 });
   }
 
-  const res = await fetch(url, {
+  // Apps Script runs doPost, then 302-redirects to the URL holding its
+  // reply. Follow that redirect by hand with a GET: Cloudflare's fetch
+  // doesn't reliably do it for a POST, so the lead saved but the reply failed.
+  let res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(lead),
+    redirect: "manual",
   });
+  const next = res.headers.get("location");
+  if (res.status >= 300 && res.status < 400 && next) {
+    res = await fetch(next);
+  }
   const text = await res.text();
   let result: { ok?: boolean } | null = null;
   try {
