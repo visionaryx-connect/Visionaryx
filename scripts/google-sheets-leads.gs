@@ -12,6 +12,9 @@
  *  After editing this script, Deploy → Manage deployments → Edit → New version
  *  (keeps the same URL).
  */
+// Where new-lead alerts go. Hard-coded so the script needs no extra permission.
+const ALERT_TO = "visionaryx.connect@gmail.com";
+
 const HEADERS = ["Date", "Name", "Email", "Phone", "Company", "Message", "Status"];
 
 function doPost(e) {
@@ -54,7 +57,7 @@ function doPost(e) {
 
 function sendAlert(d) {
   MailApp.sendEmail({
-    to: Session.getEffectiveUser().getEmail(),
+    to: ALERT_TO,
     replyTo: d.email,
     subject: "New website lead — " + d.name + " (" + d.company + ")",
     body: [
@@ -72,7 +75,7 @@ function sendAlert(d) {
 
 /** Run this once from the editor (select it → Run) to grant email permission. */
 function authorize() {
-  sendAlert({ name: "Test", email: Session.getEffectiveUser().getEmail(), company: "Setup", message: "Email alerts are working." });
+  sendAlert({ name: "Test", email: ALERT_TO, company: "Setup", message: "Email alerts are working." });
 }
 
 function json(obj) {
